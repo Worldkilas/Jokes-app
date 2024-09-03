@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joke_app/components/box_container.dart';
 import 'package:joke_app/models/joke.dart';
+import '../components/content_container.dart';
 import '../components/my_drawer.dart';
-import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -19,10 +17,42 @@ class _HomepageState extends State<Homepage> {
   JokeType selectedType = JokeType.single;
   bool isSafe = true;
   String jokeContent = '';
-  JokeService? jokeService;
+  String? errorMessage;
+  int id = 0;
+
+  bool isLoading = false;
 
   Future<void> getJoke() async {
-    final joke = await jokeService!.getJoke();
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
+    try {
+      final jokeParameters = Joke(
+        category: selectedCategory,
+        jokeContent: jokeContent,
+        type: selectedType,
+        isSafe: isSafe,
+        id: id,
+      );
+      JokeService jokeService = JokeService(joke: jokeParameters);
+      final fetchedJoke = await jokeService.getJoke();
+      setState(() {
+        jokeContent = fetchedJoke.jokeContent;
+      });
+    } catch (e) {
+      errorMessage = e.toString();
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void onCategorySelected(JokeCategory jokeCategory) {
+    setState(() {
+      selectedCategory = jokeCategory;
+    });
   }
 
   @override
@@ -42,29 +72,19 @@ class _HomepageState extends State<Homepage> {
               ))
         ],
       ),
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(
+        onCategorySelected: onCategorySelected,
+      ),
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              Container(
-                height: size.height * 0.65,
-                width: size.width,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'lib/assets/sad_emoji-removebg-preview.png',
-                    ),
-                    Text(jokeContent)
-                  ],
-                ),
+              ContentContainer(
+                size: size,
+                isLoading: isLoading,
+                jokeContent: jokeContent,
               ),
               const SizedBox(
                 height: 15,
@@ -98,11 +118,16 @@ class _HomepageState extends State<Homepage> {
               const SizedBox(
                 height: 15,
               ),
-              BoxContainer(
-                child: Center(
-                  child: Text(
-                    "Generate Jokes",
-                    style: GoogleFonts.cevicheOne(fontSize: 20),
+              Material(
+                child: InkWell(
+                  onTap: getJoke,
+                  child: BoxContainer(
+                    child: Center(
+                      child: Text(
+                        "Generate Jokes",
+                        style: GoogleFonts.cevicheOne(fontSize: 20),
+                      ),
+                    ),
                   ),
                 ),
               ),
