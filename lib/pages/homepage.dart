@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joke_app/components/box_container.dart';
 import 'package:joke_app/models/joke.dart';
+import 'package:joke_app/utils.dart';
 import '../components/content_container.dart';
 import '../components/my_drawer.dart';
 import '../joke_service.dart';
+import 'package:clipboard/clipboard.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -108,7 +110,12 @@ class _HomepageState extends State<Homepage> {
                       width: 70,
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        FlutterClipboard.copy(jokeContent).then((value) => {
+                              if (context.mounted)
+                                showSnackBar(context, 'Copied')
+                            });
+                      },
                       icon: const Icon(
                         Icons.copy_outlined,
                         color: Colors.black,
