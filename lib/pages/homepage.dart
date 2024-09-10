@@ -4,6 +4,7 @@ import 'package:joke_app/components/box_container.dart';
 import 'package:joke_app/models/joke.dart';
 import '../components/content_container.dart';
 import '../components/my_drawer.dart';
+import '../joke_service.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -22,7 +23,7 @@ class _HomepageState extends State<Homepage> {
 
   bool isLoading = false;
 
-  Future<void> getJoke() async {
+  Future<void> fetchJoke() async {
     setState(() {
       isLoading = true;
       errorMessage = '';
@@ -34,11 +35,13 @@ class _HomepageState extends State<Homepage> {
         type: selectedType,
         isSafe: isSafe,
         id: id,
+        errorMessage: errorMessage,
       );
       JokeService jokeService = JokeService(joke: jokeParameters);
       final fetchedJoke = await jokeService.getJoke();
       setState(() {
         jokeContent = fetchedJoke.jokeContent;
+        print(fetchedJoke.errorMessage);
       });
     } catch (e) {
       errorMessage = e.toString();
@@ -120,7 +123,7 @@ class _HomepageState extends State<Homepage> {
               ),
               Material(
                 child: InkWell(
-                  onTap: getJoke,
+                  onTap: fetchJoke,
                   child: BoxContainer(
                     child: Center(
                       child: Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:joke_app/models/joke.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -11,12 +12,18 @@ class MyDrawer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text(' Select a category'),
+          DrawerHeader(
+            child: Text(
+              'Select a category',
+              style: GoogleFonts.cevicheOne(fontSize: 20),
+            ),
           ),
           ...JokeCategory.values.map((category) => ListTile(
-                title: Text(category.path),
+                contentPadding: const EdgeInsets.only(left: 20),
+                title: Text(
+                  category.path,
+                  style: GoogleFonts.cevicheOne(fontSize: 20),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   onCategorySelected(category);
