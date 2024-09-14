@@ -1,8 +1,8 @@
-import 'package:isar/isar.dart';
+// import 'package:isar/isar.dart';
 
-part 'user.g.dart';
+// part 'user.g.dart';
 
-@collection
-class Favourites {
-  Id id = Isar.autoIncrement;
-}
+// @collection
+// class Favourites {
+//   Id id = Isar.autoIncrement;
+// }
