@@ -46,6 +46,8 @@ enum JokeCategory {
 
 class Joke {
   final JokeCategory category;
+  final String? setup;
+  final String? delivery;
   final String jokeContent;
   final JokeType type;
   final int id;
@@ -58,17 +60,24 @@ class Joke {
       required this.type,
       required this.isSafe,
       required this.errorMessage,
+      this.setup,
+      this.delivery,
       required this.id});
 
   factory Joke.fromJson(Map<String, dynamic> json) {
     return Joke(
-        errorMessage: json['error'] == true ? json['message'] : null,
-        category: JokeCategory.parseFromString(json['category']),
-        jokeContent: json['type'] == 'single'
-            ? json['joke'] as String
-            : {"${json['setup']} ${json['delivery']}"} as String,
-        isSafe: json['safe'] as bool,
-        id: json['id'] as int,
-        type: JokeType.parseFromString(json['type']));
+      errorMessage: json['error'] == true ? json['message'] : null,
+      setup: json['type'] == 'twopart' ? json['setup'] as String? : null,
+      delivery: json['type'] == 'twopart' ? json['delivery'] as String? : null,
+      category: JokeCategory.parseFromString(json['category']),
+      jokeContent: json['type'] == 'single'
+          ? json['joke'] as String
+          : {"${json['setup']} ${json['delivery']}"} as String,
+      isSafe: json['safe'] as bool,
+      id: json['id'] as int,
+      type: JokeType.parseFromString(
+        json['type'],
+      ),
+    );
   }
 }

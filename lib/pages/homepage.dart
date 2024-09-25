@@ -17,7 +17,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   JokeCategory selectedCategory = JokeCategory.any;
-  JokeType selectedType = JokeType.single;
+  JokeType selectedType = JokeType.twoPart;
   bool isSafe = true;
   String jokeContent = '';
   String? errorMessage;
@@ -43,7 +43,7 @@ class _HomepageState extends State<Homepage> {
       final fetchedJoke = await jokeService.getJoke();
       setState(() {
         jokeContent = fetchedJoke.jokeContent;
-        print(fetchedJoke.errorMessage);
+        // print(fetchedJo                                                                                                                        ke.errorMessage);
       });
     } catch (e) {
       errorMessage = e.toString();
@@ -59,6 +59,11 @@ class _HomepageState extends State<Homepage> {
       selectedCategory = jokeCategory;
     });
   }
+  //  void onTypeChanged(JokeType type) {
+  //   setState(() {
+  //     selectedType = type;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +95,7 @@ class _HomepageState extends State<Homepage> {
                 size: size,
                 isLoading: isLoading,
                 jokeContent: jokeContent,
+                selectedType: selectedType,
               ),
               const SizedBox(
                 height: 15,

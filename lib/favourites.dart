@@ -41,4 +41,9 @@ class FavouriteService {
 
     _favouriteJokes.addAll(loadedJokes);
   }
+
+  Future<void> deleteJoke(int id) async {
+    await isar.writeTxn(() => isar.favourites.delete(id));
+    await readJokes();
+  }
 }
